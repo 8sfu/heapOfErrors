@@ -38,7 +38,7 @@ int main(){
   cout << "Welcome to Jeep! Your available commands are listed like so (COMMAND or QUIT)" << endl;
   
   while(running){
-    cout << "Would you like to add to the tree, remove its root, or remove it entirely? (ADD or ROOT or WIPE)" << endl;
+    cout << "Would you like to add to the tree, remove its root, or remove it entirely? (ADD or ROOT or WIPE or QUIT)" << endl;
     cin.getline(input,20);
     if(cmp(input,"ADD")){
       cout << endl << "How would you like to input your numbers? (FILE or CONSOLE or QUIT)" << endl;
@@ -60,6 +60,8 @@ int main(){
       //Get root
     }else if(cmp(input,"WIPE")){
       //Wipe tree completely
+    }else{
+      printErr1();
     }
   }
 
