@@ -3,6 +3,8 @@
 
 using namespace std;
 
+//CONSOLE INPUT/OUTPUT FUNCTIONS
+
 bool cmp(char* input, const char* checkAgainst){
   if(!strcmp(input,(char*)checkAgainst)){
     return true;
@@ -30,17 +32,45 @@ int getIntput(){
   return intput;
 }
 
+//HEAP FUNCTIONS
+
+int parent(int position){
+  return (position-1)/2;
+}
+
+int leftChild(int position){
+  return position*2 + 1;
+}
+
+int rightChild(int position){
+  return position*2 + 2;
+}
+
+void addToHeap(int value, int* heap, int* size){
+  if(!size){
+    
+  }
+  
+  return;
+}
+
+//MAIN LOGIC
+
 int main(){
   char* input = new char[10];
   bool running = true;
   int intput;
+  int* heap = new int[100];
+  int* size = new int;
   
-  cout << "Welcome to Jeep! Your available commands are listed like so (COMMAND or QUIT)" << endl;
+  cout << endl << "Welcome to Jeep! Your available commands are listed like so (COMMAND or QUIT)" << endl;
   
   while(running){
-    cout << "Would you like to add to the tree, remove its root, or remove it entirely? (ADD or ROOT or WIPE or QUIT)" << endl;
+    cout << "Would you like to add to the tree, remove its root, or remove it entirely? (PRINT or ADD or ROOT or WIPE or QUIT)" << endl;
     cin.getline(input,20);
-    if(cmp(input,"ADD")){
+    if(cmp(input,"QUIT")){
+      running = false;
+    }else if(cmp(input,"ADD")){
       cout << endl << "How would you like to input your numbers? (FILE or CONSOLE or QUIT)" << endl;
       cin.getline(input,10);
       if(cmp(input,"QUIT")){
@@ -52,6 +82,8 @@ int main(){
       }else if(cmp(input,"CONSOLE")){
 	cout << "Please enter a number." << endl;
 	intput = getIntput();
+
+	
 	//ADD INT AND SORT HEAP
       }else{
 	printErr1();
@@ -60,11 +92,18 @@ int main(){
       //Get root
     }else if(cmp(input,"WIPE")){
       //Wipe tree completely
+    }else if(cmp(input,"PRINT")){
+      for(int i = 0; i < 100; i++){
+	cout << i+1 << ": " << heap[i] << endl;
+      }
+
+      
     }else{
       printErr1();
     }
   }
-
+  
   delete[] input;
+  delete[] heap;
   return 0;
 }
