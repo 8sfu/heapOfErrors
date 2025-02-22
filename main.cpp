@@ -69,7 +69,6 @@ void sortIndex(int* heap, int originalNode, int index, bool sorted){ //sort a pa
   }
 }
 
-
 void addToHeap(int* heap, int* index){
   if(*index < 100){
     int ind = *index;
@@ -115,7 +114,7 @@ void rootHeap(int* heap, int* index){
   (*index)--;
   sortIndex(heap,parent(*index),parent(*index),false);
   
-  cout << "Would you like to root your heap again? Or add a new node? (ROOT or ADD)" << endl;
+  cout << "Would you like to root your heap again or add a new node? (ROOT or ADD)" << endl;
   cin.getline(input,10);
   if(cmp(input,"ROOT")){
     bottomParent = parent(*index);
@@ -132,34 +131,51 @@ void rootHeap(int* heap, int* index){
     (*index)++;
     cout << "STARTING SORT FROM " << heap[*index] << endl;
     sortIndex(heap,parent(*index-1),parent(*index-1),false);
+  }else{
+    printErr1();
   }
   cout << endl;
 }
 
-
-void wipeHeap(int* index){
+void wipeHeap(int* index){ //reset the heap
   *index = 0;
   cout << "The heap is wiped." << endl << endl;
 }
 
-//MAIN LOGIC
+void printHeap(int* heap, int ind, int position){
+  if(position < ind){ //print right branch above
+    if(rightChild(position) < ind){
+      printHeap(heap,ind,rightChild(position));
+    }
+    int current = position;
+    while(current != 0){ //check depth and use it to offset the node print appropriately
+      cout << "      ";
+      current-=1;
+      current/=2;
+    }
+    cout << heap[position] << endl; //actual print statement
+    if (leftChild(position) < ind){ //print left branch below
+      printHeap(heap,ind,leftChild(position));
+    }
+  }
+}
 
 int main(){
-  char* input = new char[10];
-  bool running = true;
-  int intput;
-  int size = 100;
-  int* heap = new int[size];
-  int* index = new int;
+  char* input = new char[10]; //take cstring inputs
+  bool running = true; //keep looping the program until it is quit
+  int intput; //take int inputs
+  int size = 100; //max heap size
+  int* heap = new int[size]; //the actual heap
+  int* index = new int; //current heap size, initialized as 0
 
   cout << endl << "Welcome to Jeep! Your available commands are listed like so (COMMAND or QUIT)" << endl;
   
-  while(running){
+  while(running){ //basic option dialog
     cout << "Would you like to add to the tree, remove its root, or remove it entirely? (PRINT or ADD or ROOT or WIPE or QUIT)" << endl;
     cin.getline(input,20);
     if(cmp(input,"QUIT")){
       running = false;
-    }else if(cmp(input,"ADD")){
+    }else if(cmp(input,"ADD")){ //allow for console and file inputss
       cout << endl << "How would you like to input your numbers? (FILE or CONSOLE or QUIT)" << endl;
       cin.getline(input,10);
       if(cmp(input,"QUIT")){
@@ -179,8 +195,8 @@ int main(){
     }else if(cmp(input,"WIPE")){
       wipeHeap(index);
     }else if(cmp(input,"PRINT")){
-      printTest(heap,*index);
-
+      printHeap(heap,*index,0);
+      cout << endl;
       
     }else{
       printErr1();
