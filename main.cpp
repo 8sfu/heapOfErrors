@@ -6,25 +6,25 @@ using namespace std;
 
 //CONSOLE INPUT/OUTPUT FUNCTIONS
 
-bool cmp(char* input, const char* checkAgainst){
+bool cmp(char* input, const char* checkAgainst){ //simplify input to cstring comparison
   if(!strcmp(input,(char*)checkAgainst)){
     return true;
   }
   return false;
 }
 
-void printErr1(){
+void printErr1(){ //for gibberish text input
   cout << "That is not a valid command. Please refer to the parenthesized commands." << endl << endl;
 }
 
-void printErr2(){
+void printErr2(){ //for gibberish text input where int input was expected
   cout << "That is not an int. Please input an int." << endl;
 }
 
 int getIntput(){ //Bugfix for infinite loops created by char inputs where int was expected
   int intput;
   cin >> intput; cin.ignore();
-  while(cin.fail()){
+  while(cin.fail()){ //Repeatedly asks for int input until a valid one is given
     printErr2();
     cin.clear();
     cin.ignore(1024,'\n');
@@ -35,21 +35,21 @@ int getIntput(){ //Bugfix for infinite loops created by char inputs where int wa
 
 //HEAP FUNCTIONS
 
-int parent(int position){
+int parent(int position){ //returns parent of a position
   return (position-1)/2;
 }
 
-int leftChild(int position){
+int leftChild(int position){ //returns left child
   return position*2 + 1;
 }
 
-int rightChild(int position){
+int rightChild(int position){ //returns right child
   return position*2 + 2;
 }
 
 void sortIndex(int* heap, int originalNode, int index, bool sorted){ //sort a parent index and its children
   int placeholder;
-  if(heap[index] < heap[leftChild(index)]){
+  if(heap[index] < heap[leftChild(index)]){ //swap parent with left and child if needed
     placeholder = heap[index];
     heap[index] = heap[leftChild(index)];
     heap[leftChild(index)] = placeholder;
@@ -61,9 +61,9 @@ void sortIndex(int* heap, int originalNode, int index, bool sorted){ //sort a pa
     heap[rightChild(index)] = placeholder;
     sorted = false;
   }
-  if(index != 0){ //A root would have index 0, and no parents to recurse to
+  if(index != 0){ //Move to the parent's parent until the root is reached
     sortIndex(heap,originalNode,parent(index),sorted);
-  }else if(sorted){ //If sorting is unfinished, restart recursion from the original node
+  }else if(sorted){ //Once the root is reached, if sorting might still be necessary, restart recursion from the original node
     sortIndex(heap,originalNode,originalNode,false);
   }
 }
@@ -99,21 +99,20 @@ void addHeapManual(int* heap, int* index){
 void addHeapFile(int* heap, int* index){
   cout << "How many nodes would you like to add?" << endl;
   int addSize = getIntput();
-  while((*index) && (addSize % 2)){ //check if index is not 0 and size is odd
+  while((*index) && (addSize % 2)){ //repeatedly check if index is not 0 and size is odd
     cout << "You need to add an even number of nodes to maintain heap validity. How many nodes would you like to add?" << endl;
     addSize = getIntput();
   }
-  while(!(*index) && !(addSize % 2)){ //check if index is 0 and size is even
+  while(!(*index) && !(addSize % 2)){ //repeatedly check if index is 0 and size is even
     cout << "You need to add an odd number of nodes to maintain heap validity. How many nodes would you like to add?" << endl;
     addSize = getIntput();
   }
-  if(*index+addSize < 1000){
+  if(*index+addSize < 1000){ //prevent the addition of more than 999 nodes in the list (1000 would form an invalid heap)
     int temp;
     fstream n;
     n.open("n.txt",fstream::in);    
     for(int i = 0; i < addSize; i++){
       n >> heap[*index];
-      //      cout << "SETTING " << temp << " AT " << *index << endl;
       sortIndex(heap,parent(*index),parent(*index),false); //Sort the heap from the added node
       (*index)++;
     }
@@ -157,21 +156,25 @@ void wipeHeap(int* index){ //reset the heap by setting index to 0
 }
 
 void printHeap(int* heap, int ind, int position){
-  if(position < ind){ //print right branch above
-    if(rightChild(position) < ind){
-      printHeap(heap,ind,rightChild(position));
-    }
-    int current = position;
-    while(current != 0){ //check depth and use it to offset the node print appropriately
-      cout << "      ";
+  if(!ind){
+    cout << "The heap is empty." << endl;
+  }else{
+    if(position < ind){ //print right branch above
+      if(rightChild(position) < ind){
+	printHeap(heap,ind,rightChild(position));
+      }
+      int current = position;
+      while(current != 0){ //check depth and use it to offset the node print appropriately
+	cout << "      ";
       current-=1;
       current/=2;
+      }
+      cout << heap[position] << endl; //actual print statement
+      if (leftChild(position) < ind){ //print left branch below
+	printHeap(heap,ind,leftChild(position));
+      }
     }
-    cout << heap[position] << endl; //actual print statement
-    if (leftChild(position) < ind){ //print left branch below
-      printHeap(heap,ind,leftChild(position));
-    }
-  }
+  } 
 }
 
 int main(){
@@ -189,6 +192,7 @@ int main(){
     cin.getline(input,20);
     if(cmp(input,"QUIT")){
       running = false;
+      cout << endl;
     }else if(cmp(input,"ADD")){ //allow for console and file inputss
       cout << endl << "How would you like to input your numbers? (FILE or CONSOLE or QUIT)" << endl;
       cin.getline(input,10);
@@ -215,7 +219,7 @@ int main(){
       printErr1();
     }
   }
-  
+  delete index;
   delete[] input;
   delete[] heap;
   return 0;
